@@ -19,7 +19,7 @@ typedef struct{
 	Tcategorias Vcategoria;
 	Tpalabra Vpalabra;
 	Tpalabra Vpista;
-	int ML[2];
+	int ML[2];  //ML[0] = max logico Categorias; ML[1] = max logico Palabras
 }TdatosJuego;
 
 typedef struct{
@@ -27,7 +27,6 @@ typedef struct{
 	Tjugadores Vnombre;
 	int cant_partidas;
 	Tvector puntajes;
-	int ML[2];
 }Tpartidas;
 
 typedef struct{
@@ -35,7 +34,7 @@ typedef struct{
 	Tpartidas partidas;
 }Tjuego;
 
-
+//Instrucciones que aparecen en pantalla al entrar al juego.
 void saludo_inicial(){
 	printf("\t\t\tBIENVENIDOS AL AHORCADO\n");
 	printf("Un juego de vida o muerte para divertirte con tus amigos\n\n");
@@ -64,7 +63,6 @@ void inicializar_contadores(Tjuego *vector){
 	int i;
 	for(i=0; i<MAX_JUGADORES; i++){
 		vector->datos_juego.ML[i] = 0;
-		vector->partidas.ML[i] = 0;
 		vector->partidas.puntajes[i] = 0;
 		vector->partidas.cant_participantes = 0;
 		vector->partidas.cant_partidas = 0;
@@ -106,7 +104,7 @@ void ingresar_palabra(Tjuego *juego){
 		for(i=0; i<juego->datos_juego.ML[0]; i++){
 			printf("Categoria %s: ",juego->datos_juego.Vcategoria[i]);//
 			
-			for (j=0; j<(MAX_PALABRAS / juego->datos_juego.ML[0]) && salir==false; j++){
+			for (j=juego->datos_juego.ML[1]; j<(MAX_PALABRAS / juego->datos_juego.ML[0]) && salir==false; j++){
 				printf("Palabra %d: ",j+1);
 				fgets(juego->datos_juego.Vpalabra[j],MAX_CADENA,stdin);  //Falta validar
 			
@@ -118,7 +116,8 @@ void ingresar_palabra(Tjuego *juego){
 					printf("Ingrese una breve pista (hasta %d caracteres) para %s: ",MAX_CADENA,juego->datos_juego.Vpalabra[j]);
 					fgets(juego->datos_juego.Vpista[j],MAX_CADENA,stdin);
 					cambiar_fin_cadena(juego->datos_juego.Vpista[j]);
-					fflush(stdin);	
+					fflush(stdin);
+					juego->datos_juego.ML[1] +=1;
 				}
 			}
 		}
@@ -180,7 +179,7 @@ int main(){
 			}
 		}
 	}while(opcion>=1 && opcion<=4);
-	
+
 	printf("\nEsperamos que se hayan divertido.\n");
 	return 0;
 }
