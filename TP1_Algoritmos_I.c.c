@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #define MIN_CADENA 4
-#define MAX_CADENA 50
+#define MAX_CADENA 51
 #define MAX_CATEGORIAS 4 //cantidad maxima de categorias
 #define MAX_JUGADORES 5
 #define MAX_PALABRAS 20 //cantidad maxima de palabras que permite tener el juego
@@ -20,7 +20,7 @@ typedef struct{
 	Tcategorias Vcategoria;
 	Tpalabra Vpalabra;
 	Tpalabra Vpista;
-	int ML[2];  //ML[0] = max logico Categorias; ML[1] = max logico Palabras
+	int ML[1];  //ML[0] = max logico Categorias; ML[1] = max logico Palabras
 }TdatosJuego;
 
 //estructura de la partida
@@ -82,8 +82,9 @@ void ingresar_categoria(Tjuego *juego){
 	
 	for (i=juego->datos_juego.ML[0]; i<MAX_CATEGORIAS && salir==false; i++){
 		printf("\nCategoria %d: ",i+1);
-		fgets(juego->datos_juego.Vcategoria[i],MAX_CADENA,stdin);  //Falta validar
+		fgets(juego->datos_juego.Vcategoria[i],MAX_CADENA,stdin); 
 		fflush(stdin);
+		//validar_cadena(); //Falta hacer funcion para validar segun la consigna del tp
 	
 		if (strcmp(juego->datos_juego.Vcategoria[i],condicion_salida) == 0){
 			salir = true;
@@ -105,18 +106,19 @@ void ingresar_palabra(Tjuego *juego){
 	if (juego->datos_juego.ML[0]>0){
 		printf("\nIngresar palabras (hasta %d por categoria): \n",MAX_PALABRAS/MAX_CATEGORIAS);
 		for(i=0; i<juego->datos_juego.ML[0]; i++){
-			printf("Categoria %s: ",juego->datos_juego.Vcategoria[i]);//
+			printf("Categoria %s: ",juego->datos_juego.Vcategoria[i]);
 			
 			for (j=juego->datos_juego.ML[1]; j<(MAX_PALABRAS / juego->datos_juego.ML[0]) && salir==false; j++){
 				printf("Palabra %d: ",j+1);
-				fgets(juego->datos_juego.Vpalabra[j],MAX_CADENA,stdin);  //Falta validar
-			
+				fgets(juego->datos_juego.Vpalabra[j],MAX_CADENA,stdin);
+				//validar_cadena(); //Falta hacer funcion para validar segun la consigna del tp
+				
 				if(strcmp(juego->datos_juego.Vpalabra[j],condicion_salida) == 0){
 					salir = true;
 				}else{
 					cambiar_fin_cadena(juego->datos_juego.Vpalabra[j]);
 					fflush(stdin);
-					printf("Ingrese una breve pista (hasta %d caracteres) para %s: ",MAX_CADENA,juego->datos_juego.Vpalabra[j]);
+					printf("Ingrese una breve pista (hasta %d caracteres) para %s: ",MAX_CADENA-1,juego->datos_juego.Vpalabra[j]);
 					fgets(juego->datos_juego.Vpista[j],MAX_CADENA,stdin);
 					cambiar_fin_cadena(juego->datos_juego.Vpista[j]);
 					fflush(stdin);
@@ -153,6 +155,7 @@ void ingresar_datos(Tjuego *juego){
 int main(){
 	Tjuego juego;
 	int opcion;
+	
 	saludo_inicial();
 	inicializar_contadores(&juego);
 	
