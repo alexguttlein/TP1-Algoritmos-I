@@ -15,6 +15,7 @@ typedef Tstring Tcategorias[MAX_CATEGORIAS];
 typedef Tstring Tpalabra[MAX_PALABRAS];
 typedef int Tvector[MAX_JUGADORES];
 
+//estructura de los datos a cargar
 typedef struct{
 	Tcategorias Vcategoria;
 	Tpalabra Vpalabra;
@@ -22,6 +23,7 @@ typedef struct{
 	int ML[2];  //ML[0] = max logico Categorias; ML[1] = max logico Palabras
 }TdatosJuego;
 
+//estructura de la partida
 typedef struct{
 	int cant_participantes;
 	Tjugadores Vnombre;
@@ -29,6 +31,7 @@ typedef struct{
 	Tvector puntajes;
 }Tpartidas;
 
+//estructura principal
 typedef struct{
 	TdatosJuego datos_juego;
 	Tpartidas partidas;
