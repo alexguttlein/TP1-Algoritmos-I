@@ -14,13 +14,16 @@ typedef Tstring Tjugadores[MAX_JUGADORES];
 typedef Tstring Tcategorias[MAX_CATEGORIAS];
 typedef Tstring Tpalabra[MAX_PALABRAS];
 typedef int Tvector[MAX_JUGADORES];
+typedef int TvectorContador[MAX_CATEGORIAS];
 
 //estructura de los datos a cargar
 typedef struct{
 	Tcategorias Vcategoria;
 	Tpalabra Vpalabra;
 	Tpalabra Vpista;
-	int ML[1];  //ML[0] = max logico Categorias; ML[1] = max logico Palabras
+	int ML[2];  //ML[0] = max logico Categorias; ML[1] = max logico Palabras;
+	int contador_categorias;
+	TvectorContador contador_palabras;
 }TdatosJuego;
 
 //estructura de la partida
@@ -69,28 +72,38 @@ void inicializar_contadores(Tjuego *vector){
 		vector->partidas.puntajes[i] = 0;
 		vector->partidas.cant_participantes = 0;
 		vector->partidas.cant_partidas = 0;
+		vector->datos_juego.contador_categorias = 0;
+		vector->datos_juego.contador_palabras[i] = 0;
 	}
+}
+
+void ingresar_cadena(Tstring cadena, int tamano){
+	bool validar = true;
+	
+	do{
+		fgets(cadena,tamano,stdin); 
+		fflush(stdin);
+		//validar = validar_cadena(cadena); FALTA FUNCION VALIDAR CADENA
+	}while(validar == false);
+	
+	cambiar_fin_cadena(cadena);
 }
 
 //Se ingresan las categorias de las palabras a adivinar.
 void ingresar_categoria(Tjuego *juego){
 	int i;
 	bool salir = false;
-	char condicion_salida[3]="0\n";
-	
+	char condicion_salida[3]="0\0";
 	printf("Ingrese las categorias (hasta %d), finalice con 0: ",MAX_CATEGORIAS);
 	
 	for (i=juego->datos_juego.ML[0]; i<MAX_CATEGORIAS && salir==false; i++){
 		printf("\nCategoria %d: ",i+1);
-		fgets(juego->datos_juego.Vcategoria[i],MAX_CADENA,stdin); 
-		fflush(stdin);
-		//validar_cadena(); //Falta hacer funcion para validar segun la consigna del tp
-	
+		ingresar_cadena(juego->datos_juego.Vcategoria[i],MAX_CADENA);
+
 		if (strcmp(juego->datos_juego.Vcategoria[i],condicion_salida) == 0){
 			salir = true;
 		}else{ 
 			juego->datos_juego.ML[0] +=1;
-			cambiar_fin_cadena(juego->datos_juego.Vcategoria[i]);
 		}
 	}
 	if ((MAX_CATEGORIAS - juego->datos_juego.ML[0]) == 0)
@@ -101,32 +114,27 @@ void ingresar_categoria(Tjuego *juego){
 void ingresar_palabra(Tjuego *juego){
 	int i, j;
 	bool salir = false;
-	char condicion_salida[3]="0\n";
+	char condicion_salida[3]="0\0";
+	int ML_categoria = juego->datos_juego.ML[0];
+	int ML_cadena = juego->datos_juego.ML[1];
 	
-	if (juego->datos_juego.ML[0]>0){
-		printf("\nIngresar palabras (hasta %d por categoria): \n",MAX_PALABRAS/MAX_CATEGORIAS);
-		for(i=0; i<juego->datos_juego.ML[0]; i++){
-			printf("Categoria %s: ",juego->datos_juego.Vcategoria[i]);
-			
-			for (j=juego->datos_juego.ML[1]; j<(MAX_PALABRAS / juego->datos_juego.ML[0]) && salir==false; j++){
-				printf("Palabra %d: ",j+1);
-				fgets(juego->datos_juego.Vpalabra[j],MAX_CADENA,stdin);
-				//validar_cadena(); //Falta hacer funcion para validar segun la consigna del tp
-				
-				if(strcmp(juego->datos_juego.Vpalabra[j],condicion_salida) == 0){
-					salir = true;
-				}else{
-					cambiar_fin_cadena(juego->datos_juego.Vpalabra[j]);
-					fflush(stdin);
-					printf("Ingrese una breve pista (hasta %d caracteres) para %s: ",MAX_CADENA-1,juego->datos_juego.Vpalabra[j]);
-					fgets(juego->datos_juego.Vpista[j],MAX_CADENA,stdin);
-					cambiar_fin_cadena(juego->datos_juego.Vpista[j]);
-					fflush(stdin);
-					juego->datos_juego.ML[1] +=1;
-				}
+	for(i=juego->datos_juego.contador_categorias; i<juego->datos_juego.ML[0]; i++){
+		printf("\nIngresar palabras (hasta %d por categoria):\n",MAX_PALABRAS/MAX_CATEGORIAS);
+		for (j=juego->datos_juego.contador_palabras[i]; j<MAX_PALABRAS/MAX_CATEGORIAS && salir==false; j++){
+			printf("Categoria %s. Palabra %d: ",juego->datos_juego.Vcategoria[i],j+1);
+			ingresar_cadena(juego->datos_juego.Vpalabra[j],MAX_CADENA);
+			if(strcmp(juego->datos_juego.Vpalabra[j],condicion_salida) == 0){
+				salir = true;
+			}else{
+				printf("Ingrese una breve pista (hasta %d caracteres) para %s: ",MAX_CADENA-1,juego->datos_juego.Vpalabra[j]);
+				ingresar_cadena(juego->datos_juego.Vpista[j],MAX_CADENA);
+				juego->datos_juego.ML[1] +=1;
+				juego->datos_juego.contador_palabras[i] += 1;
+				if(juego->datos_juego.contador_palabras[i] == MAX_PALABRAS/MAX_CATEGORIAS)
+					juego->datos_juego.contador_categorias += 1;
 			}
 		}
-	}else printf("Antes de ingresar una palabra se debe ingresar al menos una categoria.\n");
+	}
 }
 
 //Se selecciona si se ingresa una categoria o una palabra nueva.
@@ -151,6 +159,32 @@ void ingresar_datos(Tjuego *juego){
 	}while(opcion>=1 && opcion<=2);
 }
 
+void listar_datos(Tjuego juego){
+	int i,opcion;
+	
+	do{
+		printf("\n\t\tLISTAS DE DATOS\n");
+		printf("\nSeleccione la opcion deseada\n");
+		printf("<1> Categorias (por orden alfabetico)\n<2> Palabras segun su largo (de mayor a menor)\n");
+		printf("<3> Buscar categoria\n<4> Volver al menu anterior\n");
+		scanf("%d",&opcion);
+	}while(opcion<1 || opcion>4);
+	
+	switch (opcion){
+		case 1:{
+			//ordenar_categorias(&juego);
+			break;
+		}
+		case 2:{
+			//ordenar_palabras(juego);
+			break;
+		}
+		case 3:{
+			//buscar_categoria(juego);
+			break;
+		}
+	}
+}
 
 int main(){
 	Tjuego juego;
@@ -160,6 +194,7 @@ int main(){
 	inicializar_contadores(&juego);
 	
 	do{
+		printf("\n\t\tMENU PRINCIPAL\n");
 		printf("\nSeleccionar opcion deseada:\n");
 		printf("<1> Ingresar categorias y palabras.\n<2> Listar los datos ingresados.\n");
 		printf("<3> Ingresar datos de los jugadores.\n<4> Comenzar a jugar.\n<5> Salir del juego.\n");
@@ -180,7 +215,7 @@ int main(){
 				break;
 			}
 			case 4:{
-	//			realizar_partida(juego);
+	//			comenzar_partida(juego);
 				break;
 			}
 		}
