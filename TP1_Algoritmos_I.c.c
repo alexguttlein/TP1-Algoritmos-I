@@ -1,3 +1,8 @@
+/*FALTA HACER:
+
+
+
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -347,7 +352,7 @@ int main(){
 				break;
 			}
 			case 3:{
-//				ingresar_participantes(&juego);
+				ingresar_participantes(&juego);
 				break;
 			}
 			case 4:{
