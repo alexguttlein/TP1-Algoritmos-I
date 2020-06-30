@@ -92,22 +92,26 @@ typedef struct{
 
 //Instrucciones que aparecen en pantalla al entrar al juego.
 void saludo_inicial(){
-	printf("\t\t\tBIENVENIDOS AL AHORCADO\n");
+	printf("\n\t\t\tBIENVENIDOS AL AHORCADO\n");
 	printf(" Un juego de vida o muerte para divertirte con tus amigos.\n\n");
 	printf(" Para comenzar deberan ingresar las CATEGORIAS (siempre en MAYUSCULAS), las palabras y alguna pista.\n");
 	printf(" Tambien deberan indicar el numero y nombre de jugadores y la cantidad de partidas que desean jugar.\n");
 	printf("\n Se permite hasta un maximo de %d jugadores.\n",MAX_JUGADORES);
-	printf("\n\tREGLAS:\n\t- Cada jugador ingresara una letra durante su turno. Si es correcta se completara en la palabra;\n");
-	printf("\t  si es incorrecta se le agregara puntos y se completara el ahorcado.\n\t- Cada letra mal ingresada es un punto\n");
-	printf("\t- Se sumaran 4 puntos a quien ingrese mal la ultima letra (la 7ma) y complete el ahorcado.\n");
-	printf("\t- Quien tenga menos cantidad de puntos al finalizar cada partida sera el ganador de la misma.\n");
-	printf("\t- El ganador del juego se determinara en base a la suma total de todas las partidas realizadas.\n\n");
 	printf("\n Al final de la ultima partida se indicara quien es el GANADOR.\n");
 	printf(" Se pueden ingresar hasta 6 letras que no estan en la palabra, en caso contrario sentiran el \n suave roce");
 	printf(" de la soga en sus fragiles cuellos hasta perder la vida.\n");
 	printf("\n Estan listos para morir?\n\n");
 	system("pause");
 	printf("\n\n");
+}
+
+//Reglas del juego
+void ver_reglas(){
+	printf("\n\tREGLAS:\n\t- Cada jugador ingresara una letra durante su turno. Si es correcta se completara en la palabra;\n");
+	printf("\t  si es incorrecta se le agregara puntos y se completara el ahorcado.\n\t- Cada letra mal ingresada es un punto\n");
+	printf("\t- Se sumaran 4 puntos a quien ingrese mal la ultima letra (la 7ma) y complete el ahorcado.\n");
+	printf("\t- Quien tenga menos cantidad de puntos al finalizar cada partida sera el ganador de la misma.\n");
+	printf("\t- El ganador del juego se determinara en base a la suma total de todas las partidas realizadas.\n\n");
 }
 
 
@@ -591,7 +595,6 @@ void comenzar_juego(Tjuego *juego){
 }
 
 
-
 int main(){
 	Tjuego juego;
 	int opcion;
@@ -603,7 +606,7 @@ int main(){
 		printf("\n\t\tMENU PRINCIPAL\n");
 		printf("\nSeleccionar opcion deseada:\n");
 		printf("<1> Ingresar categorias y palabras.\n<2> Listar los datos ingresados.\n");
-		printf("<3> Ingresar datos de los jugadores.\n<4> Comenzar a jugar.\n<5> Salir del juego.\n");
+		printf("<3> Ingresar datos de los jugadores.\n<4> Comenzar a jugar.\n<5> Ver reglas de juego.\n<6> Salir del juego.\n");
 		scanf("%i",&opcion);		
 		fflush(stdin);
 		
@@ -624,9 +627,13 @@ int main(){
 				comenzar_juego(&juego);
 				break;
 			}
+			case 5:{
+				ver_reglas();
+				break;
+			}
 		}
-	}while(opcion>=1 && opcion<=4);
-
+	}while(opcion>=1 && opcion<=5);
+	
 	printf("\nEsperamos que se hayan divertido.\n");
 	return 0;
 }
