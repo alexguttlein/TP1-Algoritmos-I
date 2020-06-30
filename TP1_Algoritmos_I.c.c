@@ -13,10 +13,12 @@
 
 typedef char Tstring[MAX_CADENA];
 typedef Tstring Tjugadores[MAX_JUGADORES];
-typedef Tstring Tcategorias[MAX_CATEGORIAS];
 typedef Tstring Tpalabra[MAX_PALABRAS];
+typedef Tpalabra Tcategorias[MAX_CATEGORIAS];
 typedef int Tvector[MAX_JUGADORES];
 typedef Tvector Tvec_puntajes[MAX_PARTIDAS];
+typedef int Tcontador_categorias[MAX_CATEGORIAS];
+typedef Tcontador_categorias TVcontador_palabras[0];
 typedef int TvectorContador[MAX_CATEGORIAS];
 typedef char Tstring_short[MAX_ERRORES];
 typedef char Tfilas[9];
@@ -25,11 +27,11 @@ typedef Tfilas Tmatriz[10];
 //estructura de los datos a cargar
 typedef struct{
 	Tcategorias Vcategoria;
-	Tpalabra Vpalabra;
-	Tpalabra Vpista;
-	int ML[1];  	//ML[0] = max logico Categorias; ML[1] = max logico Palabras;
-	int contador_categorias;
-	TvectorContador contador_palabras;
+	Tcategorias Vpalabra;
+	Tcategorias Vpista;
+	int ML_categorias;
+	int ML_palabras;  	//ML[0] = max logico Categorias; ML[1] = max logico Palabras;
+	TVcontador_palabras contador_palabras;
 }TdatosJuego;
 
 //estructura de la partida
@@ -77,7 +79,7 @@ void saludo_inicial(){
 //Modifica las cadenas quitando el salto de linea del final.
 void cambiar_fin_cadena(Tstring cadena){
 	int i;
-	for(i=0; i<MAX_CADENA;i++){
+	for(i = 0; i < MAX_CADENA; i++){
 		if (cadena[i]=='\n')
 			cadena[i]='\0';
 	}
@@ -87,12 +89,12 @@ void cambiar_fin_cadena(Tstring cadena){
 //Inicializa todos los contadores del juego.
 void inicializar_contadores(Tjuego *vector){
 	int i,j;
+	
 	for(i=0; i<MAX_JUGADORES; i++){
-		vector->datos_juego.ML[i] = 0;
+		vector->datos_juego.ML_categorias = 0;
+		vector->datos_juego.ML_palabras = 0;
 		vector->partidas.cant_participantes = 0;
 		vector->partidas.cant_partidas = 0;
-		vector->datos_juego.contador_categorias = 0;
-		vector->datos_juego.contador_palabras[i] = 0;
 		vector->tablero.contador_errores = 0;
 		vector->tablero.contador_intentos = 0;
 	}
@@ -100,7 +102,64 @@ void inicializar_contadores(Tjuego *vector){
 		for(j=0; j<MAX_PARTIDAS; j++){
 			vector->partidas.puntajes[i][j]= 0;
 		}
-	}	
+	}
+	for (i=0; i<MAX_CATEGORIAS; i++){
+		for (j=0; j<MAX_PALABRAS; j++){
+			vector->datos_juego.contador_palabras[i][j] = 0;
+		}
+	}
+}
+
+
+//valida que la cadena ingresada este toda en MAYUSCULAS
+int validar_mayusculas(Tstring cadena){
+	int i;
+	bool validar = true;
+	
+	for (i=0; i<strlen(cadena);i++){
+		if (cadena[i]>=97 && cadena[i]<=122){
+			validar = false;
+		}
+	}
+	if (validar == false)
+		printf("\nIngreso incorrecto. Ingrese toda la palabra en MAYUSCULAS\n");
+	return validar;
+}
+
+
+//valida si una cadena tiene el largo dentro de los rangos prestablecidos
+int validar_largo_cadena(Tstring cadena){
+	int i;
+	bool valido = true;
+	
+	if (strcmp(cadena,"0\n")==0)
+		valido = true;
+	else{
+		if (strlen(cadena)<MIN_CADENA || strlen(cadena)>MAX_CADENA)
+			valido = false;
+	}
+	
+	if (valido == false)
+		printf("Error de ingreso. Ingrese una palabra de entre %d y %d caracteres\n",MIN_CADENA-1,MAX_CADENA-1);
+	
+	return valido;
+}
+
+
+//Valida que la cadena ingresada este en mayusculas y el tamaño predeterminado.
+int validar_cadena(Tstring cadena,int tamano){
+	int i;
+	bool validar = true;
+	bool validar_mayuscula = true;
+	bool validar_largo = true;
+	
+	validar_mayuscula = validar_mayusculas(cadena);
+	if (tamano>2)
+		validar_largo = validar_largo_cadena(cadena);
+	
+	if (!validar_mayuscula || !validar_largo)
+		validar = false;
+	return validar;
 }
 
 
@@ -111,7 +170,7 @@ void ingresar_cadena(Tstring cadena, int tamano){
 	do{
 		fgets(cadena,tamano,stdin); 
 		fflush(stdin);
-		//validar = validar_cadena(cadena); FALTA FUNCION VALIDAR CADENA
+		validar = validar_cadena(cadena,tamano);
 	}while(validar == false);
 	
 	cambiar_fin_cadena(cadena);
@@ -119,52 +178,49 @@ void ingresar_cadena(Tstring cadena, int tamano){
 
 
 //Se ingresan las categorias de las palabras a adivinar.
-void ingresar_categoria(Tjuego *juego){
+void ingresar_categoria(TdatosJuego *datos_juego){
 	int i;
 	bool salir = false;
 	char condicion_salida[3]="0\0";
-	int ML_categoria = juego->datos_juego.ML[0];
+	int ML_categoria = datos_juego->ML_categorias;
 	
 	printf("Ingrese las categorias (hasta %d), finalice con 0: ",MAX_CATEGORIAS);
 	
 	for (i=ML_categoria; i<MAX_CATEGORIAS && salir==false; i++){
 		printf("\nCategoria n%c%d: ",167,i+1);
-		ingresar_cadena(juego->datos_juego.Vcategoria[i],MAX_CADENA);
+		ingresar_cadena(*datos_juego->Vcategoria[i],MAX_CADENA);
 
-		if (strcmp(juego->datos_juego.Vcategoria[i],condicion_salida) == 0){
+		if (strcmp(*datos_juego->Vcategoria[i],condicion_salida) == 0){
 			salir = true;
 		}else{ 
-			juego->datos_juego.ML[0] +=1;
+			datos_juego->ML_categorias +=1;
 		}
 	}
-	if ((MAX_CATEGORIAS - juego->datos_juego.ML[0]) == 0)
+	if ((MAX_CATEGORIAS - datos_juego->ML_categorias) == 0)
 		printf("\nSe alcanzo el maximo de categorias. Disculpe las molestias.\n\n");
 }
 
 
 //Se ingresan las palabras a adivinar.
-void ingresar_palabra(Tjuego *juego){
+void ingresar_palabra(TdatosJuego *datos_juego){
 	int i, j;
 	bool salir = false;
 	char condicion_salida[3]="0\0";
-	int ML_categoria = juego->datos_juego.ML[0];
-	int ML_cadena = juego->datos_juego.ML[1];						//guarda el indice de la ultima categoria
-	int contador_categ = juego->datos_juego.contador_categorias; 	//<---  a la que se ingreso una palabra
+	int pos_inicial = datos_juego->contador_palabras[0][0];
+	int max_palabras = MAX_PALABRAS/MAX_CATEGORIAS; //mayor cantidad de palabras aceptadas para cada categoria
 	
-	for(i=contador_categ; i<ML_categoria; i++){
-		printf("\nIngresar palabras (hasta %d por categoria):\n",MAX_PALABRAS/MAX_CATEGORIAS);
-		for (j=juego->datos_juego.contador_palabras[i]; j<MAX_PALABRAS/MAX_CATEGORIAS && salir==false; j++){
-			printf("Categoria %s. Palabra n%c%d: ",juego->datos_juego.Vcategoria[i],167,j+1);
-			ingresar_cadena(juego->datos_juego.Vpalabra[j],MAX_CADENA);
-			if(strcmp(juego->datos_juego.Vpalabra[j],condicion_salida) == 0){
+	for (i=0; i<MAX_CATEGORIAS && datos_juego->ML_categorias>i; i++){
+		printf("\nIngresar palabras (hasta %d por categoria):\n",max_palabras);
+		for(j=pos_inicial; j<MAX_PALABRAS && datos_juego->contador_palabras[i][0] < max_palabras && salir==false; j++){
+			printf("Categoria %s. Palabra n%c%d: ",datos_juego->Vcategoria[i],167,j+1);
+			ingresar_cadena(datos_juego->Vpalabra[i][j],MAX_CADENA);
+			if(strcmp(datos_juego->Vpalabra[i][j],condicion_salida) == 0){
 				salir = true;
 			}else{
-				printf("Ingrese una breve pista (hasta %d caracteres) para %s: ",MAX_CADENA-1,juego->datos_juego.Vpalabra[j]);
-				ingresar_cadena(juego->datos_juego.Vpista[j],MAX_CADENA);
-				juego->datos_juego.ML[1] +=1;
-				juego->datos_juego.contador_palabras[i] += 1;
-				if(juego->datos_juego.contador_palabras[i] == MAX_PALABRAS/MAX_CATEGORIAS)
-					contador_categ += 1;
+				datos_juego->ML_palabras +=1;
+				datos_juego->contador_palabras[i][0] += 1;
+				printf("Ingrese una descripcion para %s - %s: ",datos_juego->Vcategoria[i],datos_juego->Vpalabra[i][0]);
+				ingresar_cadena(datos_juego->Vpista[i][j],MAX_CADENA);
 			}
 		}
 	}
@@ -182,11 +238,11 @@ void ingresar_datos(Tjuego *juego){
 		fflush(stdin);
 		switch (opcion){
 			case 1:{
-				ingresar_categoria(juego);
+				ingresar_categoria(&juego->datos_juego);
 				break;
 			}
 			case 2:{
-				ingresar_palabra(juego);
+				ingresar_palabra(&juego->datos_juego);
 				break;
 			}
 		}
@@ -208,19 +264,61 @@ void listar_datos(Tjuego juego){
 	
 	switch (opcion){
 		case 1:{
-			//ordenar_categorias(&juego);
-			//mostrar_lista(juego.datos_juego.Vcategoria, juego.datos_juego.ML[0]);
+			//ordenar_categorias();
 			break;
 		}
 		case 2:{
-			//ordenar_palabras(juego);
+			//ordenar_palabras();
 			break;
 		}
 		case 3:{
-			//buscar_categoria(juego);
+			//buscar_categoria();
 			break;
 		}
 	}
+}
+
+
+//Se ingresan datos de la partida (cantidad de jugadores, nombres, cantidad de partidas)
+void ingresar_participantes(Tjuego *juego){
+	int i;
+	
+	while(juego->partidas.cant_participantes <= 0){
+		printf("Ingresar cantidad de participantes: ");
+		scanf("%d",&juego->partidas.cant_participantes);
+		fflush(stdin);	
+	}
+	
+	for (i=0; i<juego->partidas.cant_participantes; i++){
+		printf("Ingresar nombre del participante n%c %d: ",167,i+1);
+		ingresar_cadena(juego->partidas.Vnombre[i],MAX_CADENA);
+	}
+	
+	while (juego->partidas.cant_partidas <= 0){
+		printf("Indicar cantidad de partidas a jugar: ");
+		scanf("%d",&juego->partidas.cant_partidas);
+		fflush(stdin);
+	}
+}
+
+
+//Se verifica que se hayan ingresado todos los datos necesarios para comenzar una partida
+int partida_lista(Tjuego juego){
+	int i;
+	bool verificar = true;
+	if (juego.datos_juego.ML_categorias == 0){
+		printf("\nAntes de comenzar debe ingresar CATEGORIAS.\n");
+		verificar = false;
+	}
+	if (juego.datos_juego.contador_palabras[0] == 0){
+		printf("\nAntes de comenzar debe ingresar PALABRAS a las categorias.\n");
+		verificar = false;
+	}
+	if (juego.partidas.cant_participantes == 0){
+		printf("\nAntes de comenzar debe ingresar la cantidad de PARTICIPANTES\n");
+		verificar = false;
+	}
+	return verificar;
 }
 
 
