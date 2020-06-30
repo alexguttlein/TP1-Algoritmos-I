@@ -1,8 +1,32 @@
-/*FALTA HACER:
+/*ENUNCIADO:
+1) Ingresar la lista de categorías del juego (ej. Películas, Grupos musicales, Marcas de autos, etc.)						OK
+Ingresar la lista general de palabras, una pista por cada una, el puntaje por palabra y a que								OK
+categoría pertenece.
+Para este punto se debe presentar un menú que permita seleccionar la opción deseada. 										OK
+Al momento de realizar el ingreso de datos se debe:
+a) Validar que las categorías de las películas existan al cargar la categoría de cada palabra.								OK
+b) Validar que las palabras tengan más de 4 letras y menos de 50 y todo en mayúscula. 										OK
 
+2) Listar los datos ingresados. Para este punto se debe presentar un menú que permita seleccionar							OK
+la opción deseada. Los listados deben poder ordenarse según:
+a) Listado de categorías ordenado alfabéticamente en forma ascendente														FALTA
+b) Listado de palabras: alfabéticamente en forma ascendente o por cantidad de caracteres en forma descendente.				FALTA
+c) Se ingresa una categoría e informar todas las palabras ordenadas alfabéticamente.										FALTA
 
+3)Realizar una partida de la siguiente forma:
+a) armar la base del ahorcado y los espacios seleccionando una palabra random. Se rehace el dibujo en cada letra			FALTA
+b) Solicitar ingreso de carácter validar si existe en la palabra agregarlo si no armar el ahorcado							FALTA
+c) Se pueden ingresar hasta 6 letras que no están en la palabra en caso contrario se pierde la partida.						FALTA
 
+4) Ingresar cantidad de participantes (y sus nombres), ingresar cantidad de partidas. 										OK
+Una vez realizadas todas las partidas indicar:
+a) Por cada partida que participante/participantes son los ganadores (los que tienen menos puntos en contra)				FALTA
+b) Que participante/participantes son los ganadores de todo el juego 														FALTA
+
+NOTA: los puntos en contra son las letras ingresadas por cada partida (en caso de formar el ahorcado 
+suma 10 puntos en vez de 6)
 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
