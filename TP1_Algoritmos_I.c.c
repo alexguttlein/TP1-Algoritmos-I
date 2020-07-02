@@ -359,8 +359,8 @@ void ingresar_participantes(Tjuego *juego){
 		ingresar_cadena(juego->partidas.Vnombre[i],MAX_CADENA);
 	}
 	
-	while (juego->partidas.cant_partidas <= 0){
-		printf("Indicar cantidad de partidas a jugar: ");
+	while (juego->partidas.cant_partidas <= 0 || juego->partidas.cant_partidas > MAX_PARTIDAS){
+		printf("Indicar cantidad de partidas a jugar (max %d): ",MAX_PARTIDAS);
 		scanf("%d",&juego->partidas.cant_partidas);
 		fflush(stdin);
 	}
