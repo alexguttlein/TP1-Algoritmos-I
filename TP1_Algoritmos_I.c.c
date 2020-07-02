@@ -307,7 +307,7 @@ void ordenar_palabras(Tjuego juego){
 		}
 		case 2:{
 //			ordenar_palabras_dimension();
-			printf("\nCATEGORIAS POR TAMA%cO:",165);
+			printf("\PALABRAS POR TAMA%cO:",165);
 			break;
 		}
 	}
