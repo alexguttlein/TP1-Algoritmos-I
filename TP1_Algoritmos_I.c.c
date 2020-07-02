@@ -375,7 +375,7 @@ int partida_lista(Tjuego juego){
 		printf("\nAntes de comenzar debe ingresar CATEGORIAS.\n");
 		verificar = false;
 	}
-	if (juego.datos_juego.ML_palabras = 0){
+	if (juego.datos_juego.ML_palabras == 0){
 		printf("\nAntes de comenzar debe ingresar PALABRAS a las categorias.\n");
 		verificar = false;
 	}
@@ -597,27 +597,24 @@ void comenzar_juego(Tjuego *juego){
 		
 	if (partida_lista(*juego)){
 		printf("\t\t\tCOMIENZA EL JUEGO...\n\t\t\t   MUCHA SUERTE!!\n");
-	}
 	
-	srand(time(NULL));
-	
-	i = 0;
-	while (i < juego->partidas.cant_partidas && salir==false){
-		rand_categ = rand() % (juego->datos_juego.ML_categorias); //categoria seleccionada al azar
-		rand_num = rand() % (juego->datos_juego.contador_palabras[rand_categ][1]); //numero de palabra generado al azar
-		strcpy(juego->tablero.palabra_elegida, juego->datos_juego.Vpalabra[rand_categ][rand_num]); //selecciona una palabra al azar
+		srand(time(NULL));
 		
-		reiniciar_palabra_actual(juego->tablero.palabra_actual, juego->tablero.palabra_elegida); //cambia los caracteres por '_'
-		
-		printf("\t\tComienza la partida n%c %d\n",167,i+1);
-		system("pause");
-		realizar_partida(juego,juego->tablero.palabra_elegida, juego->tablero.palabra_actual, i, juego->datos_juego.Vpista[rand_categ][rand_num]); //ingresa a la partida
-		i += 1;
-	}
-	
-	if(!salir){
-		int ganador = determinar_ganador(juego->partidas, i);
-		printf("\n\tGANADOR del juego: %s\n", juego->partidas.Vnombre[ganador]);	
+		i = 0;
+		while (i < juego->partidas.cant_partidas && salir==false){
+			rand_categ = rand() % (juego->datos_juego.ML_categorias); //categoria seleccionada al azar
+			rand_num = rand() % (juego->datos_juego.contador_palabras[rand_categ][1]); //numero de palabra generado al azar
+			strcpy(juego->tablero.palabra_elegida, juego->datos_juego.Vpalabra[rand_categ][rand_num]); //selecciona una palabra al azar
+			
+			reiniciar_palabra_actual(juego->tablero.palabra_actual, juego->tablero.palabra_elegida); //cambia los caracteres por '_'
+			
+			printf("\t\tComienza la partida n%c %d\n",167,i+1);
+			system("pause");
+			realizar_partida(juego,juego->tablero.palabra_elegida, juego->tablero.palabra_actual, i, juego->datos_juego.Vpista[rand_categ][rand_num]); //ingresa a la partida
+			i += 1;
+		}	
+			int ganador = determinar_ganador(juego->partidas, i);
+			printf("\n\tGANADOR del juego: %s\n", juego->partidas.Vnombre[ganador]);	
 	}
 }
 
