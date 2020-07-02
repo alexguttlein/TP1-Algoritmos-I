@@ -348,8 +348,8 @@ void ingresar_participantes(Tjuego *juego){
 	int i;
 	juego->partidas.cant_participantes = 0;
 	
-	while(juego->partidas.cant_participantes <= 0){
-		printf("Ingresar cantidad de participantes: ");
+	while(juego->partidas.cant_participantes <= 0 || juego->partidas.cant_participantes > MAX_JUGADORES){
+		printf("Ingresar cantidad de participantes (maximo %d): ",MAX_JUGADORES);
 		scanf("%d",&juego->partidas.cant_participantes);
 		fflush(stdin);	
 	}
