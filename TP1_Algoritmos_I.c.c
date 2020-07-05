@@ -9,9 +9,9 @@ b) Validar que las palabras tengan más de 4 letras y menos de 50 y todo en may�
 
 2) Listar los datos ingresados. Para este punto se debe presentar un menú que permita seleccionar
 la opción deseada. Los listados deben poder ordenarse según:
-FALTA a) Listado de categorías ordenado alfabéticamente en forma ascendente
-FALTA b) Listado de palabras ordenado por cantidad de caracteres en forma descendente
-FALTA c) Se ingresa una categoría e informar todas las palabras ordenadas alfabéticamente
+OK a) Listado de categorías ordenado alfabéticamente en forma ascendente
+TESTING b) Listado de palabras ordenado por cantidad de caracteres en forma descendente
+TESTING c) Se ingresa una categoría e informar todas las palabras ordenadas alfabéticamente
 
 3)Realizar una partida de la siguiente forma:
 a) armar la base del ahorcado y los espacios seleccionando una palabra random. Se rehace el dibujo en cada letra			OK
@@ -288,6 +288,103 @@ void ingresar_datos(Tjuego *juego){
 	}while(opcion>=1 && opcion<=2);
 }
 
+// Se imprime cada elemento de la lista.
+void imprimir_lista(Tcategorias Vcategoria, int ML_categorias){
+	int i;
+	for (i = 0; i < ML_categorias; i++) {
+		printf("%s\n", Vcategoria[i]);
+	}
+}
+//Se ordenan alfabéticamente los elementos del vector.
+void ordenar_categorias(Tcategorias Vcategoria, int maximo, Tjuego juego){
+	int i, j;
+	Tstring aux;
+	for(i = 1; i<maximo; i++){
+		for(j=0; j<(maximo-1); j++){
+			if(strcmp(Vcategoria[i], Vcategoria[j]) > 0){
+					strcpy(aux, Vcategoria[i]);
+					strcpy(Vcategoria[i], Vcategoria[j]);
+					strcpy(Vcategoria[j], aux);
+			}
+		}
+	}
+	imprimir_lista(juego.datos_juego.Vcategoria, juego.datos_juego.ML_categorias);
+}
+
+//Se ordena por largo a los elementos del vector.
+void ordenar_palabras(Tcategorias palabras, int maximo, Tjuego juego){
+	int i, j;
+	Tstring temporal;
+	for(i=1; i<maximo; i++){
+		for(j=0; j<(maximo - 1); j++){
+			if(strlen(palabras[j+1]) < strlen(palabras[j])){
+				strcpy(temporal, palabras[j]);
+				strcpy(palabras[j], palabras[j+1]);
+				strcpy(palabras[j+1], temporal);
+			}
+		}
+	}
+	imprimir_lista(juego.datos_juego.Vpalabra, juego.datos_juego.ML_palabras);
+}
+
+//Menú para que el usuario elija si quiere salie, volver o reingresar palabra.
+/*void menu_cat_no_encontrado(){
+	int i, op;
+	do {
+		printf("¿Qué desea hacer?\n");
+		printf("\t<1> Reingresar palabra\n");
+		printf("\t<2> Volver al menú anterior\n");
+		printf("\t<3> Salir del juego\n");
+		scanf("%d\n", &i);
+	} while(op<1 || op>3);
+	switch (op) {
+		case 1:{
+			buscar_categoria(Vcategoria);
+			break;
+		}
+		case 2:{
+			listar_datos(juego);
+			break;
+		}
+		default:{
+			printf("Esperamos que haya disfrutado del juego.\n");
+			exit(0);
+			break;
+		}
+	}
+}¨*/
+
+//Se intenta encontrar la palabra ingresada y si se encuentra se ordena por orden alfabético.
+void encontrar_palabra(Tstring buscado, Tjuego juego){
+	bool encontrado = false;
+	int i = 0;
+	while(!encontrado && i<(juego.datos_juego.ML_categorias)){
+		if(strcmp(buscado, juego.datos_juego.Vcategoria[i]) == 0){
+			printf("La categoría %s contiene las siguientes palabras: \n", buscado);
+			imprimir_lista(juego.datos_juego.Vpalabra, juego.datos_juego.ML_palabras);
+			encontrado = true;
+			ordenar_categorias(juego.datos_juego.Vcategoria[i], juego.datos_juego.ML_palabras, juego);
+		} else if (i == (juego.datos_juego.ML_categorias - 1)){
+			printf("La categoria %s no se ha encontrado. Verifique que se haya ingresado correctamente.\n");
+		//	menu_cat_no_encontrado();
+		}
+		i++;
+	}
+}
+
+//Se busca una categoría e imprime las palabras de dicha categoría en orden alfabético.
+void buscar_categoria(Tjuego juego){
+	Tstring categoriaBuscada;
+	int pos;
+	printf("¿Qué categoría desea buscar?\n");
+	fgets(categoriaBuscada, MAX_CADENA, stdin);
+	fflush(stdin);
+	encontrar_palabra(categoriaBuscada, juego);
+	int q;
+	for(q=0; q < sizeof(juego.datos_juego.Vcategoria[pos]); q++){
+		printf("%s\n", juego.datos_juego.Vcategoria[pos][q]);
+	}
+}
 
 //se selecciona la manera de listar los datos ingresados
 void listar_datos(Tjuego juego){
@@ -303,39 +400,18 @@ void listar_datos(Tjuego juego){
 
 	switch (opcion){
 		case 1:{
-//			ordenar_categorias();
+			ordenar_categorias(juego.datos_juego.Vcategoria, juego.datos_juego.ML_categorias, juego);
 			break;
 		}
 		case 2:{
-			//ordenar_palabras();
+			ordenar_palabras(juego.datos_juego.Vpalabra, juego.datos_juego.ML_palabras, juego);
 			break;
 		}
 		case 3:{
-			//buscar_categoria();
+			buscar_categoria(juego);
 			break;
 		}
 	}
-}
-
-// Se imprime cada elemento de la lista.
-void imprimir_lista(Tcategorias categorias, int maximo){
-	int i;
-	for (i = 0; i < maximo; i++) {
-		printf("%s\n", categorias[i]);
-	}
-}
-//Se ordenan alfabéticamente los elementos del vector.
-void ordenar_alfabeticamente(Tcategorias categorias, int maximo){
-	int i, j;
-	Tstring aux;
-	for(i = 0; i<maximo-1; i++){
-		if(strcmp(categorias[i], categorias[i+1]) > 0){
-				strcpy(aux, categorias[i]);
-				strcpy(categorias[i], categorias[i+1]);
-				strcpy(categorias[i+1], aux);
-		}
-	}
-	imprimir_lista(categorias, ML_categorias);
 }
 
 //Se ingresan datos de la partida (cantidad de jugadores, nombres, cantidad de partidas)
@@ -636,7 +712,7 @@ int main(){
 				break;
 			}
 			case 2:{
-//				listar_datos(juego);
+				listar_datos(juego);
 				break;
 			}
 			case 3:{
