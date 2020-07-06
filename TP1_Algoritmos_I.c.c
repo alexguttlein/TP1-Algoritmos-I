@@ -289,100 +289,83 @@ void ingresar_datos(Tjuego *juego){
 }
 
 // Se imprime cada elemento de la lista.
-void imprimir_lista(Tcategorias Vcategoria, int ML_categorias){
+void imprimir_lista(Tcategorias cadena, int ML){
 	int i;
-	for (i = 0; i < ML_categorias; i++) {
-		printf("%s\n", Vcategoria[i]);
+	for (i=0; i<ML; i++){
+		printf(" - %s\n",cadena[i]);
 	}
 }
-//Se ordenan alfabéticamente los elementos del vector.
-void ordenar_categorias(Tcategorias Vcategoria, int maximo, Tjuego juego){
+
+
+//Se ordenan alfabeticamente los elementos del vector.
+void ordenar_categorias(int maximo, Tjuego *juego){
 	int i, j;
 	Tstring aux;
-	for(i = 1; i<maximo; i++){
-		for(j=0; j<(maximo-1); j++){
-			if(strcmp(Vcategoria[i], Vcategoria[j]) > 0){
-					strcpy(aux, Vcategoria[i]);
-					strcpy(Vcategoria[i], Vcategoria[j]);
-					strcpy(Vcategoria[j], aux);
+
+	for (i=0; i<maximo-1; i++){
+		for (j=i+1; j<maximo; j++){
+			if (strcmp (*juego->datos_juego.Vcategoria[i], *juego->datos_juego.Vcategoria[j]) ==1){
+					strcpy(aux, *juego->datos_juego.Vcategoria[i]);
+					strcpy(*juego->datos_juego.Vcategoria[i],*juego->datos_juego.Vcategoria[j]);
+					strcpy(*juego->datos_juego.Vcategoria[j],aux);
 			}
 		}
 	}
-	imprimir_lista(juego.datos_juego.Vcategoria, juego.datos_juego.ML_categorias);
 }
 
-//Se ordena por largo a los elementos del vector.
-void ordenar_palabras(Tcategorias palabras, int maximo, Tjuego juego){
-	int i, j;
-	Tstring temporal;
-	for(i=1; i<maximo; i++){
-		for(j=0; j<(maximo - 1); j++){
-			if(strlen(palabras[j+1]) < strlen(palabras[j])){
-				strcpy(temporal, palabras[j]);
-				strcpy(palabras[j], palabras[j+1]);
-				strcpy(palabras[j+1], temporal);
-			}
-		}
-	}
-	imprimir_lista(juego.datos_juego.Vpalabra, juego.datos_juego.ML_palabras);
-}
 
-//Menú para que el usuario elija si quiere salie, volver o reingresar palabra.
-/*void menu_cat_no_encontrado(){
-	int i, op;
-	do {
-		printf("¿Qué desea hacer?\n");
-		printf("\t<1> Reingresar palabra\n");
-		printf("\t<2> Volver al menú anterior\n");
-		printf("\t<3> Salir del juego\n");
-		scanf("%d\n", &i);
-	} while(op<1 || op>3);
-	switch (op) {
+//se selecciona el tipo de ordenamiento deseado para las palabras
+void ordenar_palabras(Tjuego juego){
+	int i,opcion;
+
+	do{
+		printf("\n\t\tORDENAR LAS PALABRAS INGRESADAS\n");
+		printf("\nSeleccione la opcion deseada\n");
+		printf("<1> Por orden alfabetico\n<2> Por cantidad de caracteres (de mayor a menor)\n");
+		printf("<3> Volver al menu principal\n");
+		scanf("%d",&opcion);
+	}while(opcion<1 || opcion>3);
+
+	switch (opcion){
 		case 1:{
-			buscar_categoria(Vcategoria);
+//			ordenar_palabras_alfabeto();
+			printf("\nPALABRAS POR ORDEN ALFABETICO:");
 			break;
 		}
 		case 2:{
-			listar_datos(juego);
+//			ordenar_palabras_dimension();
+			printf("\nPALABRAS POR TAMA%cO:",165);
 			break;
 		}
-		default:{
-			printf("Esperamos que haya disfrutado del juego.\n");
-			exit(0);
-			break;
-		}
-	}
-}¨*/
-
-//Se intenta encontrar la palabra ingresada y si se encuentra se ordena por orden alfabético.
-void encontrar_palabra(Tstring buscado, Tjuego juego){
-	bool encontrado = false;
-	int i = 0;
-	while(!encontrado && i<(juego.datos_juego.ML_categorias)){
-		if(strcmp(buscado, juego.datos_juego.Vcategoria[i]) == 0){
-			printf("La categoría %s contiene las siguientes palabras: \n", buscado);
-			imprimir_lista(juego.datos_juego.Vpalabra, juego.datos_juego.ML_palabras);
-			encontrado = true;
-			ordenar_categorias(juego.datos_juego.Vcategoria[i], juego.datos_juego.ML_palabras, juego);
-		} else if (i == (juego.datos_juego.ML_categorias - 1)){
-			printf("La categoria %s no se ha encontrado. Verifique que se haya ingresado correctamente.\n");
-		//	menu_cat_no_encontrado();
-		}
-		i++;
 	}
 }
 
-//Se busca una categoría e imprime las palabras de dicha categoría en orden alfabético.
+
 void buscar_categoria(Tjuego juego){
-	Tstring categoriaBuscada;
-	int pos;
-	printf("¿Qué categoría desea buscar?\n");
-	fgets(categoriaBuscada, MAX_CADENA, stdin);
+	int i, j, k;
+	int vec_posicion[juego.datos_juego.ML_categorias];
+	Tstring categoria;
+
+	printf("Ingresar categoria a buscar: ");
+
 	fflush(stdin);
-	encontrar_palabra(categoriaBuscada, juego);
-	int q;
-	for(q=0; q < sizeof(juego.datos_juego.Vcategoria[pos]); q++){
-		printf("%s\n", juego.datos_juego.Vcategoria[pos][q]);
+	ingresar_cadena(categoria,MAX_CADENA);
+
+	k=0;
+	j=0;
+	for (i=0; i<MAX_CATEGORIAS; i++){
+		if (strstr(juego.datos_juego.Vcategoria[i][j],categoria) != NULL){
+			vec_posicion[k] = i;
+			k++;
+		}
+	}
+	int dim_vec = k;
+
+	for (i=0; i<dim_vec; i++){
+		printf("\n - %s:\n",juego.datos_juego.Vcategoria[vec_posicion[i]]);
+		for (j=0; j<juego.datos_juego.contador_palabras[vec_posicion[i]][1]; j++){
+			printf("\t- %s\n",juego.datos_juego.Vpalabra[vec_posicion[i]][j]);
+		}
 	}
 }
 
@@ -400,11 +383,13 @@ void listar_datos(Tjuego juego){
 
 	switch (opcion){
 		case 1:{
-			ordenar_categorias(juego.datos_juego.Vcategoria, juego.datos_juego.ML_categorias, juego);
+			ordenar_categorias(juego.datos_juego.ML_categorias, &juego);
+			printf("\nCATEGORIAS POR ORDEN ALFABETICO:\n");
+			imprimir_lista(juego.datos_juego.Vcategoria, juego.datos_juego.ML_categorias);
 			break;
 		}
 		case 2:{
-			ordenar_palabras(juego.datos_juego.Vpalabra, juego.datos_juego.ML_palabras, juego);
+			ordenar_palabras(juego);
 			break;
 		}
 		case 3:{
@@ -419,8 +404,8 @@ void ingresar_participantes(Tjuego *juego){
 	int i;
 	juego->partidas.cant_participantes = 0;
 
-	while(juego->partidas.cant_participantes <= 0){
-		printf("Ingresar cantidad de participantes: ");
+	while(juego->partidas.cant_participantes <= 0 || juego->partidas.cant_participantes > MAX_JUGADORES){
+		printf("Ingresar cantidad de participantes (maximo %d): ",MAX_JUGADORES);
 		scanf("%d",&juego->partidas.cant_participantes);
 		fflush(stdin);
 	}
@@ -430,8 +415,8 @@ void ingresar_participantes(Tjuego *juego){
 		ingresar_cadena(juego->partidas.Vnombre[i],MAX_CADENA);
 	}
 
-	while (juego->partidas.cant_partidas <= 0){
-		printf("Indicar cantidad de partidas a jugar: ");
+	while (juego->partidas.cant_partidas <= 0 || juego->partidas.cant_partidas > MAX_PARTIDAS){
+		printf("Indicar cantidad de partidas a jugar (max %d): ",MAX_PARTIDAS);
 		scanf("%d",&juego->partidas.cant_partidas);
 		fflush(stdin);
 	}
@@ -667,27 +652,26 @@ void comenzar_juego(Tjuego *juego){
 	int i;
 	int rand_categ;
 	int rand_num;
-
 	if (partida_lista(*juego)){
-		printf("\t\t\tCOMIENZA EL JUEGO...\n\t\t\t   MUCHA SUERTE!!\n");
-	}
-	srand(time(NULL));
+			printf("\t\t\tCOMIENZA EL JUEGO...\n\t\t\t   MUCHA SUERTE!!\n");
 
-	i = 0;
-	while (i < juego->partidas.cant_partidas){
-		rand_categ = rand() % (juego->datos_juego.ML_categorias); //categoria seleccionada al azar
-		rand_num = rand() % (juego->datos_juego.contador_palabras[rand_categ][0]); //numero de palabra generado al azar
-		strcpy(juego->tablero.palabra_elegida, juego->datos_juego.Vpalabra[rand_categ][rand_num]); //selecciona una palabra al azar
+			srand(time(NULL));
 
-		reiniciar_palabra_actual(juego->tablero.palabra_actual, juego->tablero.palabra_elegida); //cambia los caracteres por '_'
+			i = 0;
+			while (i < juego->partidas.cant_partidas && salir==false){
+				rand_categ = rand() % (juego->datos_juego.ML_categorias); //categoria seleccionada al azar
+				rand_num = rand() % (juego->datos_juego.contador_palabras[rand_categ][1]); //numero de palabra generado al azar
+				strcpy(juego->tablero.palabra_elegida, juego->datos_juego.Vpalabra[rand_categ][rand_num]); //selecciona una palabra al azar
 
-		printf("\t\tComienza la partida n%c %d\n",167,i+1);
-		system("pause");
-		realizar_partida(juego,juego->tablero.palabra_elegida, juego->tablero.palabra_actual, i, juego->datos_juego.Vpista[rand_categ][rand_num]); //ingresa a la partida
-		i += 1;
-	}
-	int ganador = determinar_ganador(juego->partidas, i);
-	printf("\n\tGANADOR del juego: %s\n", juego->partidas.Vnombre[ganador]);
+				reiniciar_palabra_actual(juego->tablero.palabra_actual, juego->tablero.palabra_elegida); //cambia los caracteres por '_'
+
+				printf("\t\tComienza la partida n%c %d\n",167,i+1);
+				system("pause");
+				realizar_partida(juego,juego->tablero.palabra_elegida, juego->tablero.palabra_actual, i, juego->datos_juego.Vpista[rand_categ][rand_num]); //ingresa a la partida
+				i += 1;
+			}
+				int ganador = determinar_ganador(juego->partidas, i);
+				printf("\n\tGANADOR del juego: %s\n", juego->partidas.Vnombre[ganador]);	
 }
 
 
