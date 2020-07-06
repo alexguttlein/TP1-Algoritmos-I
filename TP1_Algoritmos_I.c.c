@@ -1,33 +1,3 @@
-/*ENUNCIADO:
-1) Ingresar la lista de categorías del juego (ej. Películas, Grupos musicales, Marcas de autos, etc.)						OK
-Ingresar la lista general de palabras, una pista por cada una, el puntaje por palabra y a que								OK
-categoría pertenece.
-Para este punto se debe presentar un menú que permita seleccionar la opción deseada. 										OK
-Al momento de realizar el ingreso de datos se debe:
-a) Validar que las categorías de las películas existan al cargar la categoría de cada palabra.								OK
-b) Validar que las palabras tengan más de 4 letras y menos de 50 y todo en mayúscula. 										OK
-
-2) Listar los datos ingresados. Para este punto se debe presentar un menú que permita seleccionar
-la opción deseada. Los listados deben poder ordenarse según:
-TESTING a) Listado de categorías ordenado alfabéticamente en forma ascendente
-TESTING b) Listado de palabras ordenado por cantidad de caracteres en forma descendente
-TESTING c) Se ingresa una categoría e informar todas las palabras ordenadas alfabéticamente
-
-3)Realizar una partida de la siguiente forma:
-a) armar la base del ahorcado y los espacios seleccionando una palabra random. Se rehace el dibujo en cada letra			OK
-b) Solicitar ingreso de carácter validar si existe en la palabra agregarlo si no armar el ahorcado							OK
-c) Se pueden ingresar hasta 6 letras que no están en la palabra en caso contrario se pierde la partida.						OK
-
-
-4) Ingresar cantidad de participantes (y sus nombres), ingresar cantidad de partidas. 										OK
-Una vez realizadas todas las partidas indicar:
-a) Por cada partida que participante/participantes son los ganadores (los que tienen menos puntos en contra)				OK
-b) Que participante/participantes son los ganadores de todo el juego 														OK
-
-NOTA: los puntos en contra son las letras ingresadas por cada partida (en caso de formar el ahorcado
-suma 10 puntos en vez de 6)
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -105,6 +75,7 @@ void saludo_inicial(){
 	printf("\n\n");
 }
 
+
 //Reglas del juego
 void ver_reglas(){
 	printf("\n\tREGLAS:\n\t- Cada jugador ingresara una letra durante su turno. Si es correcta se completara en la palabra;\n");
@@ -119,7 +90,7 @@ void about(){
 	printf("\n\t\t\t- - - - - - - - - - - - - - - - - - - - -");
 	printf("\n\t\t\t|\tALGORITMOS Y PROGRAMACION I     |\n\t\t\t\t\t  TP N%c 1\n",167);
 	printf("\t\t\t|\t\t  GRUPO 4\t\t|\n\n\t\t\t");
-	printf("|  Alumnos colaboradores:\t\t|\n\t\t\t  - Guttlein Gareis, Alexis\n\t\t\t| - Shiao, Tomas Jorge\t\t\t|\n\t\t\t  - Espacio para nombre");
+	printf("|  Alumnos colaboradores:\t\t|\n\t\t\t  - Guttlein Gareis, Alexis Daniel\n\t\t\t| - Shiao, Tomas Jorge\t\t\t|");
 	printf("\n\t\t\t- - - - - - - - - - - - - - - - - - - - -\n");
 }
 
@@ -296,6 +267,7 @@ void ingresar_datos(Tjuego *juego){
 	}while(opcion>=1 && opcion<=2);
 }
 
+
 // Se imprime cada elemento de la lista.
 void imprimir_lista(Tcategorias cadena, int ML){
 	int i;
@@ -317,33 +289,6 @@ void ordenar_categorias(int maximo, Tjuego *juego){
 					strcpy(*juego->datos_juego.Vcategoria[i],*juego->datos_juego.Vcategoria[j]);
 					strcpy(*juego->datos_juego.Vcategoria[j],aux);
 			}
-		}
-	}
-}
-
-
-//se selecciona el tipo de ordenamiento deseado para las palabras
-void ordenar_palabras(Tjuego juego){
-	int i,opcion;
-
-	do{
-		printf("\n\t\tORDENAR LAS PALABRAS INGRESADAS\n");
-		printf("\nSeleccione la opcion deseada\n");
-		printf("<1> Por orden alfabetico\n<2> Por cantidad de caracteres (de mayor a menor)\n");
-		printf("<3> Volver al menu principal\n");
-		scanf("%d",&opcion);
-	}while(opcion<1 || opcion>3);
-
-	switch (opcion){
-		case 1:{
-//			ordenar_palabras_alfabeto();
-			printf("\nPALABRAS POR ORDEN ALFABETICO:");
-			break;
-		}
-		case 2:{
-//			ordenar_palabras_dimension();
-			printf("\nPALABRAS POR TAMA%cO:",165);
-			break;
 		}
 	}
 }
@@ -377,87 +322,6 @@ void buscar_categoria(Tjuego juego){
 	}
 }
 
-// Se imprime cada elemento de la lista.
-void imprimir_lista(Tcategorias cadena, int ML){
-	int i;
-	for (i=0; i<ML; i++){
-		printf(" - %s\n",cadena[i]);
-	}
-}
-
-
-//Se ordenan alfabeticamente los elementos del vector.
-void ordenar_categorias(int maximo, Tjuego *juego){
-	int i, j;
-	Tstring aux;
-
-	for (i=0; i<maximo-1; i++){
-		for (j=i+1; j<maximo; j++){
-			if (strcmp (*juego->datos_juego.Vcategoria[i], *juego->datos_juego.Vcategoria[j]) ==1){
-					strcpy(aux, *juego->datos_juego.Vcategoria[i]);
-					strcpy(*juego->datos_juego.Vcategoria[i],*juego->datos_juego.Vcategoria[j]);
-					strcpy(*juego->datos_juego.Vcategoria[j],aux);
-			}
-		}
-	}
-}
-
-
-//se selecciona el tipo de ordenamiento deseado para las palabras
-void ordenar_palabras(Tjuego juego){
-	int i,opcion;
-	
-	do{
-		printf("\n\t\tORDENAR LAS PALABRAS INGRESADAS\n");
-		printf("\nSeleccione la opcion deseada\n");
-		printf("<1> Por orden alfabetico\n<2> Por cantidad de caracteres (de mayor a menor)\n");
-		printf("<3> Volver al menu principal\n");
-		scanf("%d",&opcion);
-	}while(opcion<1 || opcion>3);
-	
-	switch (opcion){
-		case 1:{
-//			ordenar_palabras_alfabeto();
-			printf("\nPALABRAS POR ORDEN ALFABETICO:");
-			break;
-		}
-		case 2:{
-//			ordenar_palabras_dimension();
-			printf("\nPALABRAS POR TAMA%cO:",165);
-			break;
-		}
-	}
-}
-
-
-void buscar_categoria(Tjuego juego){
-	int i, j, k; 
-	int vec_posicion[juego.datos_juego.ML_categorias];
-	Tstring categoria;
-	
-	printf("Ingresar categoria a buscar: ");
-
-	fflush(stdin);
-	ingresar_cadena(categoria,MAX_CADENA);
-	
-	k=0;
-	j=0;
-	for (i=0; i<MAX_CATEGORIAS; i++){
-		if (strstr(juego.datos_juego.Vcategoria[i][j],categoria) != NULL){
-			vec_posicion[k] = i;
-			k++;
-		}
-	}
-	int dim_vec = k;
-	
-	for (i=0; i<dim_vec; i++){
-		printf("\n - %s:\n",juego.datos_juego.Vcategoria[vec_posicion[i]]);
-		for (j=0; j<juego.datos_juego.contador_palabras[vec_posicion[i]][1]; j++){
-			printf("\t- %s\n",juego.datos_juego.Vpalabra[vec_posicion[i]][j]);
-		}
-	}	
-}
-
 
 //se selecciona la manera de listar los datos ingresados
 void listar_datos(Tjuego juego){
@@ -479,7 +343,7 @@ void listar_datos(Tjuego juego){
 			break;
 		}
 		case 2:{
-			ordenar_palabras(juego);
+			//ordenar_palabras();
 			break;
 		}
 		case 3:{
@@ -489,10 +353,12 @@ void listar_datos(Tjuego juego){
 	}
 }
 
+
 //Se ingresan datos de la partida (cantidad de jugadores, nombres, cantidad de partidas)
 void ingresar_participantes(Tjuego *juego){
 	int i;
 	juego->partidas.cant_participantes = 0;
+	
 	while(juego->partidas.cant_participantes <= 0 || juego->partidas.cant_participantes > MAX_JUGADORES){
 		printf("Ingresar cantidad de participantes (maximo %d): ",MAX_JUGADORES);
 		scanf("%d",&juego->partidas.cant_participantes);
@@ -503,6 +369,7 @@ void ingresar_participantes(Tjuego *juego){
 		printf("Ingresar nombre del participante n%c %d: ",167,i+1);
 		ingresar_cadena(juego->partidas.Vnombre[i],MAX_CADENA);
 	}
+	
 	while (juego->partidas.cant_partidas <= 0 || juego->partidas.cant_partidas > MAX_PARTIDAS){
 		printf("Indicar cantidad de partidas a jugar (max %d): ",MAX_PARTIDAS);
 		scanf("%d",&juego->partidas.cant_partidas);
@@ -599,7 +466,8 @@ int ganador_final(Tpartidas partida){
 	int i, j, posicion;
 	Tvector Vec_suma; //se suman los totales acumulados de cada jugador al final del juego
 	posicion = 0;
-	for(i=0;i<partida.cant_participantes; i++){
+	
+	for(i=0; i<partida.cant_participantes; i++){
 		Vec_suma[i] = 0;
 	}
 	for(i=0; i<partida.cant_participantes; i++){
@@ -619,6 +487,7 @@ int ganador_final(Tpartidas partida){
 int ganador_partida(Tpartidas partida, int num_partida){
 	int i, posicion;
 	posicion = 0;
+	
 	for(i=1;i<partida.cant_participantes;i++){
 		if (partida.puntajes[i][num_partida] < partida.puntajes[posicion][num_partida])
 			posicion = i;
@@ -756,7 +625,9 @@ void comenzar_juego(Tjuego *juego){
 			i += 1;
 		}	
 			int ganador = determinar_ganador(juego->partidas, i);
-			printf("\n\tGANADOR del juego: %s\n", juego->partidas.Vnombre[ganador]);	
+			printf("\n\t******************************************");
+			printf("\n\t GANADOR del juego:  \t\t%s \n", juego->partidas.Vnombre[ganador]);
+			printf("\t******************************************\n");
 	}
 }
 
