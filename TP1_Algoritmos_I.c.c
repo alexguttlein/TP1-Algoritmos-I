@@ -114,6 +114,15 @@ void ver_reglas(){
 }
 
 
+void about(){
+	printf("\n\t\t\t- - - - - - - - - - - - - - - - - - - - -");
+	printf("\n\t\t\t|\tALGORITMOS Y PROGRAMACION I     |\n\t\t\t\t\t  TP N%c 1\n",167);
+	printf("\t\t\t|\t\t  GRUPO 4\t\t|\n\n\t\t\t");
+	printf("|  Alumnos colaboradores:\t\t|\n\t\t\t  - Guttlein Gareis, Alexis\n\t\t\t| - Shiao, Tomas Jorge\t\t\t|\n\t\t\t  - Espacio para nombre");
+	printf("\n\t\t\t- - - - - - - - - - - - - - - - - - - - -\n");
+}
+
+
 //Modifica las cadenas quitando el salto de linea del final.
 void cambiar_fin_cadena(Tstring cadena){
 	int i;
@@ -287,6 +296,32 @@ void ingresar_datos(Tjuego *juego){
 }
 
 
+// Se imprime cada elemento de la lista.
+void imprimir_lista(Tcategorias cadena, int ML){
+	int i;
+	for (i=0; i<ML; i++){
+		printf(" - %s\n",cadena[i]);
+	}
+}
+
+
+//Se ordenan alfabeticamente los elementos del vector.
+void ordenar_categorias(int maximo, Tjuego *juego){
+	int i, j;
+	Tstring aux;
+
+	for (i=0; i<maximo-1; i++){
+		for (j=i+1; j<maximo; j++){
+			if (strcmp (*juego->datos_juego.Vcategoria[i], *juego->datos_juego.Vcategoria[j]) ==1){
+					strcpy(aux, *juego->datos_juego.Vcategoria[i]);
+					strcpy(*juego->datos_juego.Vcategoria[i],*juego->datos_juego.Vcategoria[j]);
+					strcpy(*juego->datos_juego.Vcategoria[j],aux);
+			}
+		}
+	}
+}
+
+
 //se selecciona el tipo de ordenamiento deseado para las palabras
 void ordenar_palabras(Tjuego juego){
 	int i,opcion;
@@ -314,21 +349,52 @@ void ordenar_palabras(Tjuego juego){
 }
 
 
+void buscar_categoria(Tjuego juego){
+	int i, j, k; 
+	int vec_posicion[juego.datos_juego.ML_categorias];
+	Tstring categoria;
+	
+	printf("Ingresar categoria a buscar: ");
+
+	fflush(stdin);
+	ingresar_cadena(categoria,MAX_CADENA);
+	
+	k=0;
+	j=0;
+	for (i=0; i<MAX_CATEGORIAS; i++){
+		if (strstr(juego.datos_juego.Vcategoria[i][j],categoria) != NULL){
+			vec_posicion[k] = i;
+			k++;
+		}
+	}
+	int dim_vec = k;
+	
+	for (i=0; i<dim_vec; i++){
+		printf("\n - %s:\n",juego.datos_juego.Vcategoria[vec_posicion[i]]);
+		for (j=0; j<juego.datos_juego.contador_palabras[vec_posicion[i]][1]; j++){
+			printf("\t- %s\n",juego.datos_juego.Vpalabra[vec_posicion[i]][j]);
+		}
+	}	
+}
+
+
 //se selecciona la manera de listar los datos ingresados
 void listar_datos(Tjuego juego){
 	int i,opcion;
-	
+
 	do{
 		printf("\n\t\tLISTAS DE DATOS\n");
 		printf("\nSeleccione la opcion deseada\n");
-		printf("<1> Categorias (por orden alfabetico)\n<2> Palabras por orden alfabetico o segun su dimension\n");
+		printf("<1> Categorias (por orden alfabetico)\n<2> Palabras segun su largo (de mayor a menor)\n");
 		printf("<3> Buscar categoria\n<4> Volver al menu anterior\n");
 		scanf("%d",&opcion);
 	}while(opcion<1 || opcion>4);
-	
+
 	switch (opcion){
 		case 1:{
-//			ordenar_categorias(&juego);
+			ordenar_categorias(juego.datos_juego.ML_categorias, &juego);
+			printf("\nCATEGORIAS POR ORDEN ALFABETICO:\n");
+			imprimir_lista(juego.datos_juego.Vcategoria, juego.datos_juego.ML_categorias);
 			break;
 		}
 		case 2:{
@@ -336,7 +402,7 @@ void listar_datos(Tjuego juego){
 			break;
 		}
 		case 3:{
-			//buscar_categoria(juego);
+			buscar_categoria(juego);
 			break;
 		}
 	}
@@ -623,6 +689,7 @@ int main(){
 	Tjuego juego;
 	int opcion;
 	
+	about();
 	saludo_inicial();
 	inicializar_contadores(&juego);
 	
