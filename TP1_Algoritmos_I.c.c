@@ -165,7 +165,7 @@ int validar_largo_cadena(Tstring cadena){
 }
 
 
-//Valida que la cadena ingresada este en mayusculas y el tamaï¿½o predeterminado.
+//Valida que la cadena ingresada este en mayusculas y el tamaño predeterminado.
 int validar_cadena(Tstring cadena,int tamano){
 	int i;
 	bool validar = true;
@@ -276,37 +276,47 @@ void imprimir_lista(Tcategorias cadena, int ML){
 	}
 }
 
+//Se realiza el cambio de orden
+void cambiar_orden(Tstring string1, Tstring string2){
+	Tstring aux;
+	strcpy(aux, string1);
+	strcpy(string1, string2);
+	strcpy(string2, aux);
+}
 
 //Se ordenan alfabeticamente los elementos del vector.
 void ordenar_categorias(int maximo, Tjuego *juego){
 	int i, j;
-	Tstring aux;
-
 	for (i=0; i<maximo-1; i++){
 		for (j=i+1; j<maximo; j++){
 			if (strcmp (*juego->datos_juego.Vcategoria[i], *juego->datos_juego.Vcategoria[j]) > 0){
-					strcpy(aux, *juego->datos_juego.Vcategoria[i]);
-					strcpy(*juego->datos_juego.Vcategoria[i],*juego->datos_juego.Vcategoria[j]);
-					strcpy(*juego->datos_juego.Vcategoria[j],aux);
+					cambiar_orden(*juego->datos_juego.Vcategoria[i], *juego->datos_juego.Vcategoria[j]);
 			}
 		}
 	}
 }
 
-void ordenar_palabras(int max, Tjuego *juego){
-	int i, j;
-	Tstring temp;
-	for(i=1; i< max; i++){
-		for(j=0; j<(max-1); j++){
-			if(strlen(*juego->datos_juego.Vpalabra[j])>strlen(*juego->datos_juego.Vpalabra[j+1])){
-				strcpy(temp, *juego->datos_juego.Vpalabra[j]);
-				strcpy(*juego->datos_juego.Vpalabra[j], *juego->datos_juego.Vpalabra[j+1]);
-				strcpy(*juego->datos_juego.Vpalabra[j+1], temp);
+//Se ordenan las palabras por cantidad de caracteres
+void ordenar_palabras(Tjuego *juego){
+	int i, j, k;
+	i=0;
+	while (i<MAX_CATEGORIAS && juego->datos_juego.Vcategoria[i] != "0\0"){
+		printf("\n - %s:\n",juego->datos_juego.Vcategoria[i]);
+		int max = juego->datos_juego.contador_palabras[i][1];
+		for (j=0; j<(max-1); j++){
+			for(k=(j+1); k<max; k++){
+				if(strlen(juego->datos_juego.Vpalabra[i][j])>strlen(juego->datos_juego.Vpalabra[i][k])){
+					cambiar_orden(juego->datos_juego.Vpalabra[i][j], juego->datos_juego.Vpalabra[i][k]);
+				}
 			}
+			printf("\t- %s\n",juego->datos_juego.Vpalabra[i][j]);
 		}
+		printf("\t- %s\n",juego->datos_juego.Vpalabra[i][max-1]);
+		i++;
 	}
 }
 
+//Se busca una categoría
 void buscar_categoria(Tjuego juego){
 	int i, j, k;
 	int vec_posicion[juego.datos_juego.ML_categorias];
@@ -356,9 +366,8 @@ void listar_datos(Tjuego juego){
 			break;
 		}
 		case 2:{
-			ordenar_palabras(juego.datos_juego.ML_palabras, &juego);
 			printf("\nPALABRAS POR CANTIDAD DE CARACTERES:\n");
-			imprimir_lista(juego.datos_juego.Vpalabra, juego.datos_juego.ML_palabras);
+			ordenar_palabras(&juego);
 			break;
 		}
 		case 3:{
