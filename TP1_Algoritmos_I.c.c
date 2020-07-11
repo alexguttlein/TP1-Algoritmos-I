@@ -298,22 +298,29 @@ void ordenar_categorias(int maximo, Tjuego *juego){
 
 //Se ordenan las palabras por cantidad de caracteres
 void ordenar_palabras(Tjuego *juego){
-	int i, j, k;
+	int i, j, m;
 	i=0;
+	m=0;
+	Tpalabra palabras[MAX_PALABRAS];
+	int ML_vpalabras = 0;
 	while (i<MAX_CATEGORIAS && juego->datos_juego.Vcategoria[i] != "0\0"){
-		printf("\n - %s:\n",juego->datos_juego.Vcategoria[i]);
 		int max = juego->datos_juego.contador_palabras[i][1];
-		for (j=0; j<(max-1); j++){
-			for(k=(j+1); k<max; k++){
-				if(strlen(juego->datos_juego.Vpalabra[i][j])>strlen(juego->datos_juego.Vpalabra[i][k])){
-					cambiar_orden(juego->datos_juego.Vpalabra[i][j], juego->datos_juego.Vpalabra[i][k]);
-				}
-			}
-			printf("\t- %s\n",juego->datos_juego.Vpalabra[i][j]);
+		for (j=0; j<(max); j++){
+			strcpy(palabras[m], juego->datos_juego.Vpalabra[i][j]);
+			ML_vpalabras++;
+			m++;
 		}
-		printf("\t- %s\n",juego->datos_juego.Vpalabra[i][max-1]);
 		i++;
 	}
+	int k, l;
+	for(k=0; k<(ML_vpalabras - 1); k++){
+		for (l = k+1; l < ML_vpalabras; l++) {
+			if(strlen(palabras[k])>strlen(palabras[l])){
+					cambiar_orden(palabras[k], palabras[l]);
+				}
+		}
+	}
+	imprimir_lista(palabras, ML_vpalabras);
 }
 
 //Se busca una categoría
