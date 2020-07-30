@@ -230,14 +230,14 @@ void ingresar_palabra(TdatosJuego *datos_juego){
 	for (i=0; i<MAX_CATEGORIAS && datos_juego->ML_categorias>i; i++){
 		printf("\nIngresar palabras (hasta %d por categoria):\n",max_palabras);
 		for(j=datos_juego->contador_palabras[i][1]; j<MAX_PALABRAS && datos_juego->contador_palabras[i][1] < max_palabras && salir==false; j++){
-			printf("Categoria %s. Palabra n%c%d: ",datos_juego->Vcategoria[i],167,j+1);
+			printf("Categoria %s. Palabra n%c%d: ",*datos_juego->Vcategoria[i],167,j+1);
 			ingresar_cadena(datos_juego->Vpalabra[i][j],MAX_CADENA);
 			if(strcmp(datos_juego->Vpalabra[i][j],condicion_salida) == 0){
 				salir = true;
 			}else{
 				datos_juego->ML_palabras +=1;
 				datos_juego->contador_palabras[i][1] += 1;
-				printf("Ingrese una descripcion para %s - %s: ",datos_juego->Vcategoria[i],datos_juego->Vpalabra[i][j]);
+				printf("Ingrese una descripcion para %s - %s: ",*datos_juego->Vcategoria[i],datos_juego->Vpalabra[i][j]);
 				ingresar_cadena(datos_juego->Vpista[i][j],MAX_CADENA);
 			}
 		}
@@ -272,7 +272,7 @@ void ingresar_datos(Tjuego *juego){
 void imprimir_lista(Tcategorias cadena, int ML){
 	int i;
 	for (i=0; i<ML; i++){
-		printf(" - %s\n",cadena[i]);
+		printf(" - %s\n",*cadena[i]);
 	}
 }
 
@@ -303,10 +303,10 @@ void ordenar_palabras(Tjuego *juego){
 	m=0;
 	Tpalabra palabras[MAX_PALABRAS];
 	int ML_vpalabras = 0;
-	while (i<MAX_CATEGORIAS && juego->datos_juego.Vcategoria[i] != "0\0"){
+	while (i<MAX_CATEGORIAS && (strcmp(*juego->datos_juego.Vcategoria[i], "0\0") != 0)){
 		int max = juego->datos_juego.contador_palabras[i][1];
 		for (j=0; j<(max); j++){
-			strcpy(palabras[m], juego->datos_juego.Vpalabra[i][j]);
+			strcpy(*palabras[m], juego->datos_juego.Vpalabra[i][j]);
 			ML_vpalabras++;
 			m++;
 		}
@@ -315,8 +315,8 @@ void ordenar_palabras(Tjuego *juego){
 	int k, l;
 	for(k=0; k<(ML_vpalabras - 1); k++){
 		for (l = k+1; l < ML_vpalabras; l++) {
-			if(strlen(palabras[k])>strlen(palabras[l])){
-					cambiar_orden(palabras[k], palabras[l]);
+			if(strlen(*palabras[k])>strlen(*palabras[l])){
+					cambiar_orden(*palabras[k], *palabras[l]);
 				}
 		}
 	}
@@ -345,7 +345,7 @@ void buscar_categoria(Tjuego juego){
 	int dim_vec = k;
 
 	for (i=0; i<dim_vec; i++){
-		printf("\n - %s:\n",juego.datos_juego.Vcategoria[vec_posicion[i]]);
+		printf("\n - %s:\n",*juego.datos_juego.Vcategoria[vec_posicion[i]]);
 		for (j=0; j<juego.datos_juego.contador_palabras[vec_posicion[i]][1]; j++){
 			printf("\t- %s\n",juego.datos_juego.Vpalabra[vec_posicion[i]][j]);
 		}
