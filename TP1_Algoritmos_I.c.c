@@ -410,8 +410,7 @@ void ingresar_participantes(Tjuego *juego){
 
 
 //Se verifica que se hayan ingresado todos los datos necesarios para comenzar una partida
-int partida_lista(Tjuego juego){
-	int i;
+bool partida_lista(Tjuego juego){
 	bool verificar = true;
 	if (juego.datos_juego.ML_categorias == 0){
 		printf("\nAntes de comenzar debe ingresar CATEGORIAS.\n");
